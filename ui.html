@@ -17,8 +17,6 @@
                     <i class = "bx bxs-lock-alt"></i>
                 </div>
 
-                <p v-if="errMsg" style = "color:red">{{ errMsg }}</p>
-
                 <button class = "btn" type = "submit">Login</button>
 
                 <div class = "register-link">
@@ -43,7 +41,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background: url(../assets/emerald.jpg) no-repeat; 
+        background: url(ecommerce.jpg) no-repeat; 
         background-size: cover;
         background-position: center;
     }
@@ -51,9 +49,9 @@
     .wrapper{
         width: 420px;
         background:transparent;
-        border: 2px solid rgba(255,255,255,.3); 
+        border: 2px solid black; 
         backdrop-filter: blur(15px); 
-        color: white;
+        color: black;
         border-radius: 10px;
         padding: 30px 40px;
     }
@@ -76,19 +74,19 @@
         background: transparent;
         border: none;
         outline: none;
-        border: 2px solid rgba(255,255,255, .2);
+        border: 2px solid black;
         border-radius: 40px;
         font-size: 16px;
-        color: white;
+        color: black;
         padding: 20px 45px 20px 20px;
     }
     
     .input-box input:hover{
-        background: black;
+        background: white;
     } 
     
     .input-box input::placeholder{
-        color: white;
+        color: black;
     }
     
     .input-box i {
@@ -102,19 +100,19 @@
     .wrapper .btn{
         width: 100%;
         height: 45px;
-        background: fff;
-        border: none;
+        background: transparent;
+        border: 2px solid black;
         outline: none;
         border-radius: 40px;
         box-shadow: 0 0 10px rgba(0,0,0, .3);
         cursor: pointer;
         font-size: 16px;
-        color: white;
+        color: black;
         font-weight: 600;
     }
     
     .btn:hover{
-        background: black;
+        background: white;
     }
     
     .wrapper .register-link{
@@ -124,7 +122,7 @@
     }
     
     .register-link p a {
-        color: lightskyblue;
+        color: darkblue;
         text-decoration: none;
         font-weight: 600;
     }
