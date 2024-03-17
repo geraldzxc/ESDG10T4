@@ -20,12 +20,8 @@ class Payment(db.Model):
     __tablename__ = 'payment'
 
     payment_id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
-    order_item = db.Column(nullable=False)
-    cart_amt = db.Column(db.Float(scale=2), nullable=False)
-    payment_id = db.Column(db.Integer,nullable=False)
-    shipping_id = db.Column(db.Integer,nullable=False)
-    error_id = db.Column(db.Integer)
+    price = db.Column(db.Float, nullable = False)
+    paymentSuccess = db.Column(db.Boolean, nullable = False)
     # status = db.Column(db.String(10), nullable=False)
     # created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # modified = db.Column(db.DateTime, nullable=False,
@@ -71,7 +67,7 @@ class Order_Item(db.Model):
         return {'item_id': self.item_id, 'book_id': self.book_id, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
-@app.route("/order")
+@app.route("/payment")
 def get_all():
     orderlist = db.session.scalars(db.select(Order)).all()
     if len(orderlist):
