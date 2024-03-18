@@ -20,12 +20,12 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
     order_item = db.Column(nullable=False)
     cart_amt = db.Column(db.Float(scale=2), nullable=False)
-    payment_id = db.Column(db.Integer,nullable=False)
-    shipping_id = db.Column(db.Integer,nullable=False)
-    error_id = db.Column(db.Integer)
+    # customer_id = db.Column(db.Integer, nullable=False)
+    # payment_id = db.Column(db.Integer,nullable=False)
+    # shipping_id = db.Column(db.Integer,nullable=False)
+    # error_id = db.Column(db.Integer)
     # status = db.Column(db.String(10), nullable=False)
     # created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # modified = db.Column(db.DateTime, nullable=False,
@@ -34,12 +34,12 @@ class Order(db.Model):
     def json(self):
         dto = {
             'order_id': self.order_id,
-            'customer_id': self.customer_id,
+            # 'customer_id': self.customer_id,
             'order_item' : self.order_item,
             'cart_amt' : self.cart_amt,
-            'payment_id' : self.payment_id,
-            'shipping_id' : self.shipping_id,
-            'error_id' : self.error_id
+            # 'payment_id' : self.payment_id,
+            # 'shipping_id' : self.shipping_id,
+            # 'error_id' : self.error_id
             # 'status': self.status,
             # 'created': self.created,
             # 'modified': self.modified
