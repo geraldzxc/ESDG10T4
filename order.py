@@ -20,8 +20,8 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True)
-    order_item = db.Column(nullable=False)
-    cart_amt = db.Column(db.Float(scale=2), nullable=False)
+    order_item = db.relationship('Order_Item', backref='order', cascade='all, delete-orphan')
+    cart_amt = db.Column(db.Float, nullable=False)
     # customer_id = db.Column(db.Integer, nullable=False)
     # payment_id = db.Column(db.Integer,nullable=False)
     # shipping_id = db.Column(db.Integer,nullable=False)
@@ -59,7 +59,7 @@ class Order_Item(db.Model):
     order_id = db.Column(db.ForeignKey(
         'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    book_id = db.Column(db.String(13), nullable=False)
+    # book_id = db.Column(db.String(13), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
