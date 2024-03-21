@@ -5,8 +5,10 @@
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 from datetime import datetime
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/order'
@@ -15,34 +17,36 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
+CORS(app)  
+
 
 class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True)
-    order_item = db.relationship('Order_Item', backref='order', cascade='all, delete-orphan')
+    # order_item = db.relationship('Order_Item', backref='order', cascade='all, delete-orphan')
     cart_amt = db.Column(db.Float, nullable=False)
     # customer_id = db.Column(db.Integer, nullable=False)
     # payment_id = db.Column(db.Integer,nullable=False)
     # shipping_id = db.Column(db.Integer,nullable=False)
     # error_id = db.Column(db.Integer)
-    # status = db.Column(db.String(10), nullable=False)
-    # created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    # modified = db.Column(db.DateTime, nullable=False,
-    #                      default=datetime.now, onupdate=datetime.now)
+    status = db.Column(db.String(10), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    modified = db.Column(db.DateTime, nullable=False,
+                         default=datetime.now, onupdate=datetime.now)
 
     def json(self):
         dto = {
             'order_id': self.order_id,
             # 'customer_id': self.customer_id,
-            'order_item' : self.order_item,
+            # 'order_item' : self.order_item,
             'cart_amt' : self.cart_amt,
             # 'payment_id' : self.payment_id,
             # 'shipping_id' : self.shipping_id,
             # 'error_id' : self.error_id
-            # 'status': self.status,
-            # 'created': self.created,
-            # 'modified': self.modified
+            'status': self.status,
+            'created': self.created,
+            'modified': self.modified
         }
 
         dto['order_item'] = []
@@ -68,7 +72,7 @@ class Order_Item(db.Model):
         'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
 
     def json(self):
-        return {'item_id': self.item_id, 'book_id': self.book_id, 'quantity': self.quantity, 'order_id': self.order_id}
+        return {'item_id': self.item_id, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
 @app.route("/order")
@@ -133,6 +137,9 @@ def create_order():
                 "message": "An error occurred while creating the order. " + str(e)
             }
         ), 500
+    
+    print(json.dumps(order.json(), default=str)) # convert a JSON object to a string and print
+    print()
 
     return jsonify(
         {
