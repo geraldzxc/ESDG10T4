@@ -30,11 +30,14 @@ USE `order_schema`;
 -- Table structure for table `order`
 --
 
-DROP TABLE IF EXISTS `order`;
-CREATE TABLE IF NOT EXISTS `order` (
+DROP TABLE IF EXISTS `order_detail`;
+CREATE TABLE IF NOT EXISTS `order_detail` (
   `order_id` int(11) NOT NULL AUTO_INCREMENT,
   `cart_amt` float(2) NOT NULL,
---   `customer_id` varchar(32) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  `payment_id` int(11) NOT NULL,
+  `shipping_id` int(11) NOT NULL,
+  `error_id` int(11) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'NEW',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -45,8 +48,8 @@ CREATE TABLE IF NOT EXISTS `order` (
 -- Dumping data for table `order`
 --
 
-INSERT INTO `order` (`order_id`, `cart_amt`, `status`, `created`, `modified`) VALUES
-(1, 40.54, 'NEW', '2020-06-12 02:14:55', '2020-06-12 02:14:55');
+INSERT INTO `order_detail` (`order_id`, `cart_amt`, `user_id`, `payment_id`, `shipping_id`, `error_id`,`status`, `created`, `modified`) VALUES
+(1, 40.54, 'John Michaels', 234, 567, NULL, 'NEW', '2020-06-12 02:14:55', '2020-06-12 02:14:55');
 
 -- --------------------------------------------------------
 
@@ -59,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `order_item` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
 --   `book_id` char(13) NOT NULL,
+  -- `item_name` varchar(32) NOT NULL,
   `quantity` int(11) NOT NULL,
   PRIMARY KEY (`item_id`),
   KEY `FK_order_id` (`order_id`)
@@ -68,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `order_item` (
 -- Dumping data for table `order_item`
 --
 
-INSERT INTO `order_item` (`item_id`, `order_id`, `quantity`) VALUES
+INSERT INTO `order_item` (`item_id`, `order_id`,`quantity`) VALUES
 (1, 1, 1),
 (2, 1, 1);
 
@@ -80,7 +84,7 @@ INSERT INTO `order_item` (`item_id`, `order_id`, `quantity`) VALUES
 -- Constraints for table `order_item`
 --
 ALTER TABLE `order_item`
-  ADD CONSTRAINT `FK_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_order_id` FOREIGN KEY (`order_id`) REFERENCES `order_detail` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

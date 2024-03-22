@@ -11,7 +11,7 @@ from datetime import datetime
 import json
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/order'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/order_schema'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -20,16 +20,16 @@ db = SQLAlchemy(app)
 CORS(app)  
 
 
-class Order(db.Model):
-    __tablename__ = 'order'
+class Order_detail(db.Model):
+    __tablename__ = 'order_detail'
 
     order_id = db.Column(db.Integer, primary_key=True)
     # order_item = db.relationship('Order_Item', backref='order', cascade='all, delete-orphan')
     cart_amt = db.Column(db.Float, nullable=False)
-    # customer_id = db.Column(db.Integer, nullable=False)
-    # payment_id = db.Column(db.Integer,nullable=False)
-    # shipping_id = db.Column(db.Integer,nullable=False)
-    # error_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, nullable=False)
+    payment_id = db.Column(db.Integer,nullable=False)
+    shipping_id = db.Column(db.Integer,nullable=False)
+    error_id = db.Column(db.Integer)
     status = db.Column(db.String(10), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     modified = db.Column(db.DateTime, nullable=False,
@@ -38,12 +38,12 @@ class Order(db.Model):
     def json(self):
         dto = {
             'order_id': self.order_id,
-            # 'customer_id': self.customer_id,
+            'user_id': self.user_id,
             # 'order_item' : self.order_item,
             'cart_amt' : self.cart_amt,
-            # 'payment_id' : self.payment_id,
-            # 'shipping_id' : self.shipping_id,
-            # 'error_id' : self.error_id
+            'payment_id' : self.payment_id,
+            'shipping_id' : self.shipping_id,
+            'error_id' : self.error_id,
             'status': self.status,
             'created': self.created,
             'modified': self.modified
@@ -61,15 +61,15 @@ class Order_Item(db.Model):
 
     item_id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.ForeignKey(
-        'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-
+        'order_detail.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    # item_name= db.Column(db.String, nullable=False)
     # book_id = db.Column(db.String(13), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
     # order = db.relationship('Order', backref='order_item')
     order = db.relationship(
-        'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
+        'Order_detail', primaryjoin='Order_Item.order_id == Order_detail.order_id', backref='order_item')
 
     def json(self):
         return {'item_id': self.item_id, 'quantity': self.quantity, 'order_id': self.order_id}
@@ -77,7 +77,7 @@ class Order_Item(db.Model):
 
 @app.route("/order")
 def get_all():
-    orderlist = db.session.scalars(db.select(Order)).all()
+    orderlist = db.session.scalars(db.select(Order_detail)).all()
     if len(orderlist):
         return jsonify(
             {
@@ -98,7 +98,7 @@ def get_all():
 @app.route("/order/<string:order_id>")
 def find_by_order_id(order_id):
     order = db.session.scalars(
-        db.select(Order).filter_by(order_id=order_id).limit(1)).first()
+        db.select(Order_detail).filter_by(order_id=order_id).limit(1)).first()
     if order:
         return jsonify(
             {
@@ -119,8 +119,8 @@ def find_by_order_id(order_id):
 
 @app.route("/order", methods=['POST'])
 def create_order():
-    customer_id = request.json.get('customer_id', None)
-    order = Order(customer_id=customer_id, status='NEW')
+    user_id = request.json.get('user_id', None)
+    order = Order_detail(user_id=user_id, status='NEW')
 
     cart_item = request.json.get('cart_item')
     for item in cart_item:
@@ -153,7 +153,7 @@ def create_order():
 def update_order(order_id):
     try:
         order = db.session.scalars(
-        db.select(Order).filter_by(order_id=order_id).
+        db.select(Order_detail).filter_by(order_id=order_id).
         limit(1)).first()
         if not order:
             return jsonify(
