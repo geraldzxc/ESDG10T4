@@ -1,31 +1,39 @@
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> <!-- CDN to get box icons-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!--CDN to get social media buttons-->
 
-<div class = "background-container">
-    <div class = "wrapper">
-        <form v-on:submit.prevent ="validateUser">
+<div class="background-container">
+    <div class="wrapper">
+        <form id="loginForm">
             <h1>Login</h1>
-                <div class = "input-box">
-                    <input type = "text" v-model = "email" placeholder = "Email" 
-                    required>
-                    <i class = "bx bxs-user"></i>
-                </div>
+            <div class="input-box">
+                <input type="text" id="email" placeholder="Email" required>
+                <i class="bx bxs-user"></i>
+            </div>
 
-                <div class = "input-box">
-                    <input type = "password" v-model = "password" placeholder = "Password" 
-                    required>
-                    <i class = "bx bxs-lock-alt"></i>
-                </div>
+            <div class="input-box">
+                <input type="password" id="password" placeholder="Password" required>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
 
-                <button class = "btn" type = "submit">Login</button>
+            <button class="btn" type="button" onclick="validateUser()">Login</button>
 
-                <div class = "register-link">
-                    <p>Don't have an account?
-                    <a><router-link to="/register">Register</router-link></a></p> <!-- Input sign up page reference -->
-                </div>
+            <div class="register-link">
+                <p>Don't have an account? <a href="/register">Register</a></p> <!-- Input sign up page reference -->
+            </div>
         </form>
     </div>
 </div>
+</div>
+
+<script>
+    function validateUser() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        // Perform validation or login logic here
+        
+    }
+</script>
 
 <style scoped>
     *{
@@ -71,7 +79,7 @@
     .input-box input{
         width: 100%;
         height: 100%;
-        background: transparent;
+        background: white;
         border: none;
         outline: none;
         border: 2px solid black;
@@ -81,9 +89,6 @@
         padding: 20px 45px 20px 20px;
     }
     
-    .input-box input:hover{
-        background: white;
-    } 
     
     .input-box input::placeholder{
         color: black;
@@ -100,7 +105,7 @@
     .wrapper .btn{
         width: 100%;
         height: 45px;
-        background: transparent;
+        background: white;
         border: 2px solid black;
         outline: none;
         border-radius: 40px;
