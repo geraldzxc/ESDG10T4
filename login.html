@@ -18,7 +18,9 @@
             <button class="btn" type="button" onclick="validateUser()">Login</button>
 
             <div class="register-link">
-                <p>Don't have an account? <a href="/register">Register</a></p> <!-- Input sign up page reference -->
+                <p>Don't have an account? <a href="register.html">Register</a></p> <!-- Input sign up page reference -->
+                <br>
+                <p id = "loginError" style = "color:red; text-align:center"></p>
             </div>
         </form>
     </div>
@@ -30,8 +32,41 @@
         var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
 
-        // Perform validation or login logic here
-        
+        var xhr = new XMLHttpRequest();
+
+        // Set the request URL
+        var url = "http://127.0.0.1:5000/login"; // Update the URL to match the app route
+
+        // Set the request method to POST
+        xhr.open("POST", url, true);
+
+        // Set the request headers
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // Create a data object with the user's inputted email and password
+        var data = {
+            email: email,
+            password: password
+        };
+
+        // Convert the data object to JSON
+        var jsonData = JSON.stringify(data);
+
+        // Set the callback function for when the request is complete
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Request successful, handle the response here
+                var response = JSON.parse(xhr.responseText);
+                // Redirect the user to index.html
+                window.location.href = "index.html";
+            } else if (xhr.readyState === 4 && xhr.status !== 200) {
+                // Request failed, handle the error here
+                document.getElementById('loginError').innerText = "Username or Password is incorrect!";
+            }
+        };
+
+        // Send the request with the JSON data
+        xhr.send(jsonData);
     }
 </script>
 
