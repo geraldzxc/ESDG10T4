@@ -6,10 +6,12 @@ import os
 import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
@@ -32,6 +34,30 @@ class User(db.Model):
 
     def json(self):
         return {'user_id': self.user_id, 'username': self.username, 'email': self.email}
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        # Get the email and password from the request
+        email = request.json['email']
+        password = request.json['password']
+
+        # Check if the user exists
+        user = User.query.filter_by(email=email, password=password).first()
+
+        if user:
+            # User exists, return a success response
+            return jsonify({'message': 'Login successful'})
+        else:
+            # User does not exist or password is incorrect, return an error response
+            return jsonify({'message': 'Username or password is incorrect'}), 401
+        
+    except Exception as e:
+        # Log the exception details
+        print(f"An error occurred: {str(e)}")
+        # Return an error response
+        return jsonify({'message': 'An error occurred on the server'}), 500
 
 
 @app.route("/user/create", methods=['POST'])
@@ -85,4 +111,4 @@ def get_all():
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
