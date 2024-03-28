@@ -3,7 +3,6 @@
 # to run this file as a python3 script
 
 import os
-import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
