@@ -28,8 +28,6 @@ class Payment(db.Model):
         return {'payment_id': self.payment_id, 'price': self.price, 'payment_success': self.payment_success, 
                 'cust_id': self.cust_id, 'order_id': self.order_id}
 
-with app.app_context():
-    db.create_all()
 
 # Display all payment records for a specific customer
 # customer_id column matches customer_id passed in parameter
