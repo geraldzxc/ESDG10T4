@@ -3,18 +3,18 @@
 # to run this file as a python3 script
 
 import os
+import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/order'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/user'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
-
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -34,18 +34,19 @@ class User(db.Model):
         return {'user_id': self.user_id, 'username': self.username, 'email': self.email}
 
 
-@app.route("/user", methods=['POST'])
+@app.route("/user/create", methods=['POST'])
 def create_user():
     data = request.json
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    usertype = data.get('user_type')
 
     # Check if the user already exists
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
         return jsonify({"message": "User already exists"}), 400
 
-    new_user = User(username=username, email=email, password=password)
+    new_user = User(username=username, email=email, password=password, user_type=usertype)
     db.session.add(new_user)
     db.session.commit()
 
@@ -59,6 +60,27 @@ def get_user(user_id):
         return jsonify({"message": "User not found"}), 404
 
     return jsonify(user.json()), 200
+
+@app.route("/user")
+def get_all():
+    userlist = db.session.scalars(db.select(User)).all()
+
+    if len(userlist):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "users": [user.json() for user in userlist]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no users."
+        }
+    ), 404
+
 
 
 if __name__ == '__main__':
